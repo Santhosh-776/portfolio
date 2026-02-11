@@ -1,0 +1,62 @@
+@import "tailwindcss";
+@config "../tailwind.config.js";
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+  
+  body {
+    @apply bg-deep-navy text-slate-light antialiased leading-relaxed;
+    overflow-x: hidden;
+    cursor: none;
+  }
+
+  * {
+    cursor: none !important;
+  }
+
+  ::selection {
+    @apply bg-vibrant-blue text-deep-navy;
+  }
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-deep-navy;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-slate-dark rounded-full;
+  border: 2px solid theme('colors.deep-navy');
+}
+
+::-webkit-scrollbar-thumb:hover {
+  @apply bg-vibrant-blue;
+}
+
+/* Custom Cursor Styles */
+.custom-cursor {
+  transition: transform 0.3s ease;
+  box-shadow: 0 0 10px rgba(100, 255, 218, 0.5);
+}
+
+.custom-cursor-dot {
+  box-shadow: 0 0 8px rgba(100, 255, 218, 0.8);
+}
+
+/* Glassmorphism Utilities */
+@layer utilities {
+  .glass {
+    @apply bg-deep-navy/70 backdrop-blur-md border border-white/10;
+  }
+  
+  .glass-card {
+    @apply bg-[#112240]/90 backdrop-blur-sm;
+  }
+}
+
