@@ -1,0 +1,11 @@
+{
+  "hosting": {
+    "site": "santhosh77",
+    "public": "dist",
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**"
+    ]
+  }
+}
