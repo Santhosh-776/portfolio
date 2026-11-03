@@ -4,59 +4,115 @@
 @layer base {
   html {
     scroll-behavior: smooth;
-  }
-  
-  body {
-    @apply bg-deep-navy text-slate-light antialiased leading-relaxed;
-    overflow-x: hidden;
-    cursor: none;
+    background-color: #02050e;
   }
 
-  * {
-    cursor: none !important;
+  body {
+    background-color: #02050e;
+    background-image: radial-gradient(ellipse at 50% 30%, #091428 0%, #030713 55%, #010207 100%);
+    background-attachment: fixed;
+    color: #ffffff;
+    font-family: 'Poppins', sans-serif;
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
 
   ::selection {
-    @apply bg-vibrant-blue text-deep-navy;
+    background-color: #ffffff;
+    color: #000000;
+  }
+}
+
+/* Hide native cursor on desktop so the white custom circular cursor takes over smoothly */
+@media (hover: hover) and (pointer: fine) {
+
+  html,
+  body,
+  a,
+  button,
+  input,
+  textarea,
+  select,
+  [role="button"],
+  * {
+    cursor: none !important;
   }
 }
 
 /* Custom Scrollbar */
 ::-webkit-scrollbar {
-  width: 10px;
+  width: 8px;
 }
 
 ::-webkit-scrollbar-track {
-  @apply bg-deep-navy;
+  background: #02050e;
 }
 
 ::-webkit-scrollbar-thumb {
-  @apply bg-slate-dark rounded-full;
-  border: 2px solid theme('colors.deep-navy');
+  background: #1f2937;
+  border-radius: 9999px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  @apply bg-vibrant-blue;
+  background: #374151;
 }
 
-/* Custom Cursor Styles */
-.custom-cursor {
-  transition: transform 0.3s ease;
-  box-shadow: 0 0 10px rgba(100, 255, 218, 0.5);
-}
-
-.custom-cursor-dot {
-  box-shadow: 0 0 8px rgba(100, 255, 218, 0.8);
-}
-
-/* Glassmorphism Utilities */
+/* Minimalist Dark Utilities */
 @layer utilities {
   .glass {
-    @apply bg-deep-navy/70 backdrop-blur-md border border-white/10;
+    background-color: rgba(6, 11, 22, 0.75);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
   }
-  
+
   .glass-card {
-    @apply bg-[#112240]/90 backdrop-blur-sm;
+    background-color: rgba(8, 14, 28, 0.85);
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  /* Click-Through Overlay System: pass through empty space to 3D canvas, keep UI interactive */
+  .canvas-overlay-mode {
+    pointer-events: none;
+  }
+
+  .canvas-overlay-mode a,
+  .canvas-overlay-mode button,
+  .canvas-overlay-mode input,
+  .canvas-overlay-mode label,
+  .canvas-overlay-mode select,
+  .canvas-overlay-mode textarea,
+  .canvas-overlay-mode [role="button"],
+  .canvas-overlay-mode p,
+  .canvas-overlay-mode h1,
+  .canvas-overlay-mode h2,
+  .canvas-overlay-mode h3,
+  .canvas-overlay-mode h4,
+  .canvas-overlay-mode h5,
+  .canvas-overlay-mode h6,
+  .canvas-overlay-mode span,
+  .canvas-overlay-mode svg,
+  .canvas-overlay-mode img {
+    pointer-events: auto;
   }
 }
 
+@keyframes keep-compositor-active {
+  0% {
+    transform: translateZ(0.001px);
+  }
+
+  50% {
+    transform: translateZ(0.002px);
+  }
+
+  100% {
+    transform: translateZ(0.001px);
+  }
+}
+
+.screen-active-compositor {
+  animation: keep-compositor-active 2s infinite linear;
+  will-change: transform;
+}

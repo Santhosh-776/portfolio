@@ -1,25 +1,45 @@
-import { FaGithub, FaLinkedin, FaTwitter, FaInstagram } from 'react-icons/fa';
+import React from 'react';
+import { Mail } from 'lucide-react';
+import { FaGithub, FaLinkedin } from 'react-icons/fa';
+import { personalInfo } from '../utils/resumeData';
 
-const Footer = () => {
+export const Footer: React.FC = () => {
   return (
-    <footer className="bg-deep-navy py-8 text-center text-pale-blue/50 text-sm font-mono relative z-10">
-      <div className="flex justify-center space-x-6 mb-4 md:hidden">
-        <a href="https://github.com" target="_blank" rel="noopener noreferrer" className="hover:text-vibrant-blue transition-colors">
-            <FaGithub size={20} />
-        </a>
-        <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" className="hover:text-vibrant-blue transition-colors">
-            <FaLinkedin size={20} />
-        </a>
-        <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" className="hover:text-vibrant-blue transition-colors">
-            <FaTwitter size={20} />
-        </a>
-        <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="hover:text-vibrant-blue transition-colors">
-            <FaInstagram size={20} />
-        </a>
+    <footer className="bg-black/90 backdrop-blur-md border-t border-neutral-900 py-10 text-center text-neutral-400 text-xs font-sans relative z-20">
+      <div className="max-w-6xl mx-auto px-6 flex flex-col md:flex-row items-center justify-between gap-4">
+        <div className="flex items-center gap-2 text-neutral-300">
+          <span>Engineered with React, Three.js, R3F &amp; GSAP ScrollTrigger</span>
+        </div>
+
+        <div className="flex items-center space-x-6">
+          <a
+            href={personalInfo.links.github}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="hover:text-white transition-colors flex items-center gap-1.5"
+          >
+            <FaGithub size={16} /> GitHub
+          </a>
+          <a
+            href={personalInfo.links.linkedin}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="hover:text-white transition-colors flex items-center gap-1.5"
+          >
+            <FaLinkedin size={16} /> LinkedIn
+          </a>
+          <a
+            href={personalInfo.links.email}
+            className="hover:text-white transition-colors flex items-center gap-1"
+          >
+            <Mail size={16} /> Email
+          </a>
+        </div>
+
+        <p className="text-neutral-500 font-sans">
+          &copy; {new Date().getFullYear()} {personalInfo.name}. All rights reserved.
+        </p>
       </div>
-      <p className="hover:text-sky-blue transition-colors cursor-default">
-        Designed & Built by Santhosh
-      </p>
     </footer>
   );
 };

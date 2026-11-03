@@ -1,79 +1,160 @@
-import { useEffect, useRef } from 'react';
-import { gsap } from 'gsap';
+import React, { useEffect, useRef } from 'react';
 
-const CustomCursor = () => {
-  const cursorRef = useRef<HTMLDivElement>(null);
-  const cursorDotRef = useRef<HTMLDivElement>(null);
+export const CustomCursor: React.FC = () => {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
-    const cursor = cursorRef.current;
-    const cursorDot = cursorDotRef.current;
+    // Only activate for devices that support fine hover pointers (mice, trackpads)
+    const isPointerFine = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+    if (!isPointerFine) return;
 
-    if (!cursor || !cursorDot) return;
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
 
-    const moveCursor = (e: MouseEvent) => {
-      gsap.to(cursor, {
-        x: e.clientX,
-        y: e.clientY,
-        duration: 0.5,
-        ease: 'power2.out',
-      });
+    let width = (canvas.width = window.innerWidth);
+    let height = (canvas.height = window.innerHeight);
 
-      gsap.to(cursorDot, {
-        x: e.clientX,
-        y: e.clientY,
-        duration: 0.1,
-      });
+    const handleResize = () => {
+      width = canvas.width = window.innerWidth;
+      height = canvas.height = window.innerHeight;
+    };
+    window.addEventListener('resize', handleResize);
+
+    // Cursor position state (instant)
+    const mouse = {
+      x: -100,
+      y: -100,
+      isHovering: false,
+      isDown: false,
+      active: false,
+      opacity: 0,
     };
 
-    const handleMouseEnter = () => {
-      gsap.to(cursor, {
-        scale: 1.5,
-        duration: 0.3,
-      });
+    // Trailing circle position (lerped follower)
+    const follower = {
+      x: -100,
+      y: -100,
+      radius: 16,
+      targetRadius: 16,
     };
 
-    const handleMouseLeave = () => {
-      gsap.to(cursor, {
-        scale: 1,
-        duration: 0.3,
-      });
+    const handlePointerMove = (e: PointerEvent) => {
+      mouse.active = true;
+      mouse.x = e.clientX;
+      mouse.y = e.clientY;
+
+      // If follower is uninitialized, snap directly to start position
+      if (follower.x < 0) {
+        follower.x = mouse.x;
+        follower.y = mouse.y;
+      }
     };
 
-    // Add event listeners
-    window.addEventListener('mousemove', moveCursor);
+    const handlePointerLeave = () => {
+      mouse.active = false;
+    };
 
-    // Add hover effects for interactive elements
-    const interactiveElements = document.querySelectorAll('a, button, [role="button"]');
-    interactiveElements.forEach((el) => {
-      el.addEventListener('mouseenter', handleMouseEnter);
-      el.addEventListener('mouseleave', handleMouseLeave);
-    });
+    const handlePointerDown = () => {
+      mouse.isDown = true;
+    };
+
+    const handlePointerUp = () => {
+      mouse.isDown = false;
+    };
+
+    // Detect if hovering over clickable or interactive element
+    const handleMouseOver = (e: MouseEvent) => {
+      const target = e.target as HTMLElement | null;
+      if (!target) return;
+
+      const interactive = target.closest(
+        'a, button, input, textarea, select, [role="button"], .pointer-events-auto, [onclick], .laptop-screen-display'
+      );
+      mouse.isHovering = !!interactive;
+    };
+
+    window.addEventListener('pointermove', handlePointerMove, { passive: true });
+    document.addEventListener('mouseleave', handlePointerLeave, { passive: true });
+    window.addEventListener('pointerdown', handlePointerDown, { passive: true });
+    window.addEventListener('pointerup', handlePointerUp, { passive: true });
+    document.addEventListener('mouseover', handleMouseOver, { passive: true });
+
+    let animationFrameId: number;
+
+    const render = () => {
+      ctx.clearRect(0, 0, width, height);
+
+      // Smooth fade in / fade out
+      const targetOpacity = mouse.active ? 1 : 0;
+      mouse.opacity += (targetOpacity - mouse.opacity) * 0.15;
+
+      if (mouse.opacity > 0.01) {
+        // Follower physics: smooth lag behind the primary cursor dot
+        const followSpeed = mouse.isDown ? 0.22 : 0.16;
+        follower.x += (mouse.x - follower.x) * followSpeed;
+        follower.y += (mouse.y - follower.y) * followSpeed;
+
+        // Target radius scales up when hovering interactive elements, compresses slightly on click
+        let desiredRadius = mouse.isHovering ? 26 : 16;
+        if (mouse.isDown) {
+          desiredRadius *= 0.82;
+        }
+        follower.radius += (desiredRadius - follower.radius) * 0.14;
+
+        ctx.save();
+        ctx.globalAlpha = mouse.opacity;
+
+        // 1. Draw Trailing Following Circle (behind the white dot)
+        ctx.beginPath();
+        ctx.arc(follower.x, follower.y, follower.radius, 0, Math.PI * 2);
+        ctx.lineWidth = mouse.isHovering ? 1.75 : 1.25;
+        ctx.strokeStyle = mouse.isHovering
+          ? 'rgba(255, 255, 255, 0.9)'
+          : 'rgba(255, 255, 255, 0.6)';
+        ctx.stroke();
+
+        // Subtle translucent fill when hovering to highlight click target
+        if (mouse.isHovering) {
+          ctx.fillStyle = 'rgba(255, 255, 255, 0.08)';
+          ctx.fill();
+        }
+
+        // 2. Draw Solid White Dot (exact mouse position)
+        const dotRadius = mouse.isHovering ? 2.5 : 3.5;
+        ctx.beginPath();
+        ctx.arc(mouse.x, mouse.y, dotRadius, 0, Math.PI * 2);
+        ctx.fillStyle = '#ffffff';
+        ctx.shadowColor = 'rgba(255, 255, 255, 0.5)';
+        ctx.shadowBlur = 4;
+        ctx.fill();
+
+        ctx.restore();
+      }
+
+      animationFrameId = requestAnimationFrame(render);
+    };
+
+    animationFrameId = requestAnimationFrame(render);
 
     return () => {
-      window.removeEventListener('mousemove', moveCursor);
-      interactiveElements.forEach((el) => {
-        el.removeEventListener('mouseenter', handleMouseEnter);
-        el.removeEventListener('mouseleave', handleMouseLeave);
-      });
+      cancelAnimationFrame(animationFrameId);
+      window.removeEventListener('resize', handleResize);
+      window.removeEventListener('pointermove', handlePointerMove);
+      document.removeEventListener('mouseleave', handlePointerLeave);
+      window.removeEventListener('pointerdown', handlePointerDown);
+      window.removeEventListener('pointerup', handlePointerUp);
+      document.removeEventListener('mouseover', handleMouseOver);
     };
   }, []);
 
   return (
-    <>
-      {/* Outer cursor ring */}
-      <div
-        ref={cursorRef}
-        className="custom-cursor pointer-events-none fixed top-0 left-0 w-8 h-8 border-2 border-vibrant-blue rounded-full z-[9999] mix-blend-difference"
-        style={{ transform: 'translate(-50%, -50%)' }}
-      />
-      {/* Inner cursor dot */}
-      <div
-        ref={cursorDotRef}
-        className="custom-cursor-dot pointer-events-none fixed top-0 left-0 w-2 h-2 bg-vibrant-blue rounded-full z-[9999] mix-blend-difference"
-        style={{ transform: 'translate(-50%, -50%)' }}
-      />
-    </>
+    <canvas
+      ref={canvasRef}
+      className="pointer-events-none fixed inset-0 z-[999999] overflow-hidden"
+      aria-hidden="true"
+    />
   );
 };
 
