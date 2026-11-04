@@ -9,19 +9,15 @@ import { FaGithub, FaLinkedin } from 'react-icons/fa';
 import { personalInfo } from '../utils/resumeData';
 
 export const Hero: React.FC = () => {
-
-
   return (
     <section
       id="hero"
       className="relative h-screen min-h-screen flex items-center justify-center px-6 md:px-16 lg:px-24 bg-transparent text-white font-sans overflow-hidden"
     >
       {/* Main Container - 2 Column Layout on Desktop */}
-      <div className="w-full max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-12 items-center relative z-20">
+      <div className="w-full max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-12 items-center relative z-20 pointer-events-none">
         {/* Left Column: Hero Copy & Actions */}
-        <div className="lg:col-span-6 flex flex-col justify-center space-y-6">
-
-
+        <div className="lg:col-span-6 flex flex-col justify-center space-y-6 pointer-events-auto">
           {/* Name & Title */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -35,11 +31,7 @@ export const Hero: React.FC = () => {
             <h1 className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-sans font-extrabold text-white tracking-tight leading-[1.08]">
               {personalInfo.name}
             </h1>
-
-
           </motion.div>
-
-
 
           {/* CTA Buttons */}
           <motion.div
@@ -105,9 +97,10 @@ export const Hero: React.FC = () => {
             </a>
           </motion.div>
         </div>
+
+        {/* Right Column: Clear viewport area for 3D Laptop with internal screen */}
+        <div className="lg:col-span-6 hidden lg:block" />
       </div>
-
-
     </section>
   );
 };

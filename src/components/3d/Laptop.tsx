@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Html } from '@react-three/drei';
 import { useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
@@ -8,24 +8,35 @@ interface LaptopProps {
   laptopRef: React.RefObject<THREE.Group | null>;
   lidRef?: React.RefObject<THREE.Group | null>;
   portalRef?: React.RefObject<HTMLElement | null>;
+  onReady?: () => void;
 }
 
-export function Laptop({ screenContent, laptopRef, lidRef, portalRef }: LaptopProps) {
-  // Screen power state: fully invisible when folded shut, smoothly powers on as lid swings open
-  const [screenVisible, setScreenVisible] = useState(false);
+export function Laptop({ screenContent, laptopRef, lidRef, portalRef, onReady }: LaptopProps) {
+  const [screenPowered, setScreenPowered] = useState(false);
 
-  // Monitor lid angle every frame: when closed (rotation.x > 0.9 rad), screen is completely hidden.
+  // Monitor lid angle: when closed (rotation.x > 1.0 rad), screen is off.
   // As lid swings open, screen powers on!
   useFrame(() => {
     if (lidRef?.current) {
-      const isOpen = lidRef.current.rotation.x < 0.9;
-      if (isOpen !== screenVisible) {
-        setScreenVisible(isOpen);
+      const isOpen = lidRef.current.rotation.x < 1.0;
+      if (isOpen !== screenPowered) {
+        setScreenPowered(isOpen);
       }
     }
   });
 
-  // Apple Space Gray / Silver Anodized Aluminum - exactly matching user's reference images
+  useEffect(() => {
+    // Failsafe: ensures screen is powered on after initial entrance
+    const timer = setTimeout(() => {
+      setScreenPowered(true);
+    }, 600);
+    if (onReady) {
+      onReady();
+    }
+    return () => clearTimeout(timer);
+  }, [onReady]);
+
+  // Apple Space Gray / Silver Anodized Aluminum
   const appleSilverColor = '#a1a4aa';
   const appleSilverDark = '#8a8d94';
   const appleSilverLight = '#b8bbc2';
@@ -212,19 +223,29 @@ export function Laptop({ screenContent, laptopRef, lidRef, portalRef }: LaptopPr
           <meshStandardMaterial color="#22c55e" emissive="#22c55e" emissiveIntensity={0.8} />
         </mesh>
 
-        {/* ================= INTERACTIVE SCREEN DISPLAY (HIGH-DPI RETINA SHARPNESS) ================= */}
+        {/* Obsidian Glass Display Panel (Realistic High-Gloss Metallic Screen) */}
+        <mesh position={[0, 1.04, 0.038]}>
+          <boxGeometry args={[3.04, 1.94, 0.003]} />
+          <meshStandardMaterial
+            color="#080a10"
+            metalness={0.92}
+            roughness={0.12}
+          />
+        </mesh>
+
+        {/* High-DPI Razor-Sharp Screen Display (Retina Resolution, Zero Blur) */}
         <Html
           transform
           portal={portalRef as any}
-          position={[0, 1.04, 0.038]}
+          position={[0, 1.04, 0.039]}
           distanceFactor={0.76}
           style={{
             backfaceVisibility: 'hidden',
             WebkitBackfaceVisibility: 'hidden',
-            opacity: screenVisible ? 1 : 0,
-            visibility: screenVisible ? 'visible' : 'hidden',
-            pointerEvents: screenVisible ? 'auto' : 'none',
-            transition: 'opacity 0.35s ease-out',
+            opacity: screenPowered ? 1 : 0,
+            visibility: screenPowered ? 'visible' : 'hidden',
+            pointerEvents: screenPowered ? 'auto' : 'none',
+            transition: 'opacity 0.4s ease-out',
             WebkitFontSmoothing: 'antialiased',
             MozOsxFontSmoothing: 'grayscale',
             textRendering: 'optimizeLegibility',
@@ -238,6 +259,7 @@ export function Laptop({ screenContent, laptopRef, lidRef, portalRef }: LaptopPr
               zoom: 2,
               transformStyle: 'flat',
             }}
+            className="w-full h-full"
           >
             {screenContent}
           </div>

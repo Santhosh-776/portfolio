@@ -1,6 +1,5 @@
-import React, { useRef, Suspense } from 'react';
+import React, { useRef, useState, Suspense } from 'react';
 import { Canvas } from '@react-three/fiber';
-import { Stars } from '@react-three/drei';
 import * as THREE from 'three';
 import { Laptop } from './Laptop';
 import { ScreenContent } from './ScreenContent';
@@ -24,23 +23,13 @@ function Scene({
 }: CanvasContainerProps) {
   const laptopRef = useRef<THREE.Group>(null);
   const lidRef = useRef<THREE.Group>(null);
+  const [isReady, setIsReady] = useState(false);
 
   // Hook handles all scroll synchronization between GSAP ScrollTrigger and the 3D Laptop
-  useLaptopScroll(laptopRef, lidRef, setActiveProjectIndex, setActiveSection);
+  useLaptopScroll(laptopRef, lidRef, setActiveProjectIndex, setActiveSection, isReady);
 
   return (
     <>
-      {/* 3D Cosmic Starfield matching reference image */}
-      <Stars
-        radius={90}
-        depth={60}
-        count={5000}
-        factor={4}
-        saturation={0}
-        fade
-        speed={1.0}
-      />
-
       {/* Studio Lighting Setup for Metallic Space-Gray finish */}
       <ambientLight intensity={1.4} />
       <directionalLight position={[6, 9, 6]} intensity={2.2} color="#ffffff" castShadow />
@@ -48,12 +37,13 @@ function Scene({
       <pointLight position={[0, -2, 3]} intensity={1.0} color="#ffffff" />
       <pointLight position={[3, 2, -2]} intensity={0.6} color="#ffffff" />
 
-      {/* 3D Laptop */}
+      {/* 3D Laptop with High-DPI Sharp Internal Screen */}
       <Suspense fallback={null}>
         <Laptop
           laptopRef={laptopRef}
           lidRef={lidRef}
           portalRef={portalRef}
+          onReady={() => setIsReady(true)}
           screenContent={
             <ScreenContent
               activeSection={activeSection}

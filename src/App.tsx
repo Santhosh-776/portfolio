@@ -23,7 +23,7 @@ function App() {
       {/* Global Navigation */}
       <Navbar />
 
-      {/* Fixed 3D WebGL Canvas Layer with Stars */}
+      {/* Fixed 3D WebGL Canvas Layer */}
       <CanvasContainer
         activeSection={activeSection}
         setActiveSection={setActiveSection}

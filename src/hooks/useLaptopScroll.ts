@@ -11,10 +11,11 @@ export function useLaptopScroll(
   laptopRef: React.RefObject<any>,
   lidRef: React.RefObject<any>,
   setActiveProject: (index: number) => void,
-  setActiveSection: (section: SectionType) => void
+  setActiveSection: (section: SectionType) => void,
+  isReady: boolean = true
 ) {
   useEffect(() => {
-    if (!laptopRef.current) return;
+    if (!isReady || !laptopRef.current) return;
     const laptop = laptopRef.current;
     const lid = lidRef.current;
 
@@ -370,5 +371,5 @@ export function useLaptopScroll(
       lenis.destroy();
       ScrollTrigger.getAll().forEach((trigger) => trigger.kill());
     };
-  }, [laptopRef, lidRef, setActiveProject, setActiveSection]);
+  }, [laptopRef, lidRef, setActiveProject, setActiveSection, isReady]);
 }
