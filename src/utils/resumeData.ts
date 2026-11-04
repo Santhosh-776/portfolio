@@ -55,6 +55,7 @@ export interface ProjectData {
   github: string;
   live?: string;
   previewUrl: string;
+  image?: string;
 }
 
 export const featuredProjects: ProjectData[] = [
@@ -85,6 +86,7 @@ export const featuredProjects: ProjectData[] = [
     github: "https://github.com/Santhosh-776/DeployMind",
     live: "https://github.com/Santhosh-776/DeployMind",
     previewUrl: "https://deploymind.cloud/dashboard",
+    image: "/deploymind.png",
   },
   {
     id: "grex",
@@ -113,6 +115,7 @@ export const featuredProjects: ProjectData[] = [
     github: "https://github.com/Santhosh-776/Grex",
     live: "https://github.com/Santhosh-776/Grex",
     previewUrl: "https://grex-workspace.app/board",
+    image: "/grex.png",
   },
   {
     id: "pulmoguard",
@@ -141,6 +144,7 @@ export const featuredProjects: ProjectData[] = [
     github: "https://github.com/Santhosh-776/PulmoGuard-AI",
     live: "https://github.com/Santhosh-776/PulmoGuard-AI",
     previewUrl: "https://pulmoguard.ai/screening",
+    image: "/pulmoguard.png",
   },
 ];
 

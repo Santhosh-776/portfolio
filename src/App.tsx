@@ -8,12 +8,12 @@ import Contact from './components/Contact';
 import Footer from './components/Footer';
 import CustomCursor from './components/CustomCursor';
 import { CanvasContainer } from './components/3d/CanvasContainer';
-import { SectionWrapper } from './components/ui/SectionWrapper';
 import type { SectionType } from './hooks/useLaptopScroll';
 
 function App() {
   const [activeSection, setActiveSection] = useState<SectionType>('hero');
   const [activeProjectIndex, setActiveProjectIndex] = useState<number>(0);
+  const [activeSkill, setActiveSkill] = useState<string>('LangGraph');
 
   return (
     <div className="min-h-screen text-white relative font-sans">
@@ -29,19 +29,17 @@ function App() {
         setActiveSection={setActiveSection}
         activeProjectIndex={activeProjectIndex}
         setActiveProjectIndex={setActiveProjectIndex}
+        activeSkill={activeSkill}
+        setActiveSkill={setActiveSkill}
       />
 
       {/* Synchronized Scroll Storyline with Click-Through Canvas Layering */}
       <main className="canvas-overlay-mode relative z-20">
         <Hero />
-        <Skills />
+        <Skills activeSkill={activeSkill} setActiveSkill={setActiveSkill} />
         <Projects activeProjectIndex={activeProjectIndex} />
-        <SectionWrapper>
-          <Experience />
-        </SectionWrapper>
-        <SectionWrapper>
-          <Contact />
-        </SectionWrapper>
+        <Experience />
+        <Contact />
       </main>
 
       {/* Footer */}

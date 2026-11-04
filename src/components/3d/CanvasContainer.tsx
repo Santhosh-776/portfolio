@@ -11,6 +11,8 @@ interface CanvasContainerProps {
   setActiveSection: (section: SectionType) => void;
   activeProjectIndex: number;
   setActiveProjectIndex: (index: number) => void;
+  activeSkill?: string;
+  setActiveSkill?: (skill: string) => void;
   portalRef?: React.RefObject<HTMLDivElement | null>;
 }
 
@@ -19,6 +21,8 @@ function Scene({
   setActiveSection,
   activeProjectIndex,
   setActiveProjectIndex,
+  activeSkill,
+  setActiveSkill,
   portalRef,
 }: CanvasContainerProps) {
   const laptopRef = useRef<THREE.Group>(null);
@@ -48,6 +52,8 @@ function Scene({
             <ScreenContent
               activeSection={activeSection}
               activeProjectIndex={activeProjectIndex}
+              activeSkill={activeSkill}
+              setActiveSkill={setActiveSkill}
             />
           }
         />

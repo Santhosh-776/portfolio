@@ -1,13 +1,12 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { 
-  Mail, 
-  Phone, 
-  Send, 
-  Award, 
-  CheckCircle2, 
-  Sparkles, 
-  Globe 
+import {
+  Mail,
+  Phone,
+  Send,
+  CheckCircle2,
+  Sparkles,
+  Globe
 } from 'lucide-react';
 import { FaGithub, FaLinkedin } from 'react-icons/fa';
 import { personalInfo, certifications } from '../utils/resumeData';
@@ -39,10 +38,7 @@ export const Contact: React.FC = () => {
         {/* ================= CERTIFICATIONS SECTION ================= */}
         <div>
           <div className="text-center mb-10">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-neutral-900 border border-neutral-800 text-neutral-300 font-sans text-xs mb-3">
-              <Award size={14} />
-              <span>05 // INDUSTRY ACCREDITATION</span>
-            </div>
+
             <h2 className="text-3xl md:text-4xl font-sans font-bold text-white">
               Professional Certifications
             </h2>
@@ -98,10 +94,7 @@ export const Contact: React.FC = () => {
         {/* ================= CONTACT SECTION ================= */}
         <div>
           <div className="text-center mb-12">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-neutral-900 border border-neutral-800 text-neutral-300 font-sans text-xs mb-3">
-              <Mail size={13} />
-              <span>06 // INITIATE TRANSMISSION</span>
-            </div>
+
             <h2 className="text-4xl md:text-5xl font-sans font-bold text-white">
               Get In Touch
             </h2>

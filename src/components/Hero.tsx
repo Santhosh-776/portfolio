@@ -15,9 +15,9 @@ export const Hero: React.FC = () => {
       className="relative h-screen min-h-screen flex items-center justify-center px-6 md:px-16 lg:px-24 bg-transparent text-white font-sans overflow-hidden"
     >
       {/* Main Container - 2 Column Layout on Desktop */}
-      <div className="w-full max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-12 items-center relative z-20 pointer-events-none">
+      <div className="w-full max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-16 items-center relative z-20 pointer-events-none">
         {/* Left Column: Hero Copy & Actions */}
-        <div className="lg:col-span-6 flex flex-col justify-center space-y-6 pointer-events-auto">
+        <div className="lg:col-span-5 max-w-xl flex flex-col justify-center space-y-6 pointer-events-auto">
           {/* Name & Title */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -28,7 +28,7 @@ export const Hero: React.FC = () => {
             <h2 className="text-base md:text-lg font-sans text-neutral-400 font-medium tracking-wide">
               Hello, World! I'm
             </h2>
-            <h1 className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-sans font-extrabold text-white tracking-tight leading-[1.08]">
+            <h1 className="text-5xl sm:text-6xl lg:text-7xl font-sans font-extrabold text-white tracking-tight leading-[1.08]">
               {personalInfo.name}
             </h1>
           </motion.div>
@@ -48,8 +48,10 @@ export const Hero: React.FC = () => {
             </a>
 
             <a
-              href="mailto:santhoshnadarajan.work@gmail.com"
-              className="px-6 py-3.5 bg-neutral-950 hover:bg-neutral-900 text-white border border-neutral-800 font-sans text-sm rounded-lg transition-all duration-300 flex items-center gap-2 hover:scale-[1.02] active:scale-[0.98]"
+              href="/Santhosh_Resume.pdf"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="px-6 py-3.5 bg-neutral-950 hover:bg-neutral-900 text-white border border-neutral-800 font-sans text-sm rounded-lg transition-all duration-300 flex items-center gap-2 hover:scale-[1.02] active:scale-[0.98] cursor-pointer"
             >
               <FileText size={16} /> View Résumé
             </a>
@@ -99,7 +101,7 @@ export const Hero: React.FC = () => {
         </div>
 
         {/* Right Column: Clear viewport area for 3D Laptop with internal screen */}
-        <div className="lg:col-span-6 hidden lg:block" />
+        <div className="lg:col-span-7 hidden lg:block" />
       </div>
     </section>
   );

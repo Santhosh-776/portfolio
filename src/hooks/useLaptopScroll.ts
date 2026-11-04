@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import Lenis from 'lenis';
+import { featuredProjects } from '../utils/resumeData';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -26,9 +27,9 @@ export function useLaptopScroll(
 
     // Initialize Lenis for smooth momentum-damped trackpad scrolling (Shared GSAP clock)
     const lenis = new Lenis({
-      duration: 1.8,
+      duration: 1.2,
       smoothWheel: true,
-      wheelMultiplier: 2.0,
+      wheelMultiplier: 1.25,
       touchMultiplier: 1.5,
     });
 
@@ -52,9 +53,9 @@ export function useLaptopScroll(
       laptop.rotation.set(0.55, -0.85, 0.2);
       laptop.scale.set(0.62, 0.62, 0.62);
     } else {
-      // Centered in hero column with reduced scale and safe clearance from social icons
-      laptop.position.set(0.65, -0.36, 0.2);
-      laptop.rotation.set(0.65, -1.15, 0.32);
+      // Centered in hero right column with ample gap from text (>80px) and proper vertical alignment
+      laptop.position.set(0.95, 0.22, 1.28);
+      laptop.rotation.set(0.55, -1.05, 0.28);
       laptop.scale.set(0.72, 0.72, 0.72);
     }
 
@@ -63,7 +64,7 @@ export function useLaptopScroll(
 
     // 2. Idle Floating Animation (starts paused, plays after MacBook opens)
     const floatTween = gsap.to(laptop.position, {
-      y: isMobile ? '-=0.06' : '+=0.08',
+      y: isMobile ? '-=0.06' : '+=0.06',
       duration: 2.6,
       repeat: -1,
       yoyo: true,
@@ -79,13 +80,26 @@ export function useLaptopScroll(
       },
     });
 
+    // Animate MacBook into Hero isometric position
+    introTL.to(
+      laptop.position,
+      {
+        x: isMobile ? 0 : 0.95,
+        y: isMobile ? -0.6 : -0.22,
+        z: isMobile ? 0.4 : 0.28,
+        duration: 1.8,
+        ease: 'power2.out',
+      },
+      0
+    );
+
     // Rotate MacBook into Hero isometric position
     introTL.to(
       laptop.rotation,
       {
-        x: isMobile ? 0.25 : 0.28,
-        y: isMobile ? 0 : -0.42,
-        z: isMobile ? 0 : 0.08,
+        x: isMobile ? 0.25 : 0.24,
+        y: isMobile ? 0 : -0.38,
+        z: isMobile ? 0 : 0.05,
         duration: 1.8,
         ease: 'power2.out',
       },
@@ -197,7 +211,14 @@ export function useLaptopScroll(
           onLeaveBack: () => setActiveSection('projects'),
         },
       });
-      mobileExpTL.to(laptop.position, { y: -5, z: -2, ease: 'none' }, 0);
+      mobileExpTL.to(laptop.position, { x: 0, y: 0.5, z: 0.7, ease: 'none' }, 0);
+
+      ScrollTrigger.create({
+        trigger: '#contact',
+        start: 'top 70%',
+        onEnter: () => setActiveSection('contact'),
+        onLeaveBack: () => setActiveSection('experience'),
+      });
 
       return () => {
         window.removeEventListener('scroll', handleInitialScroll);
@@ -239,22 +260,19 @@ export function useLaptopScroll(
     });
 
     skillsTL
-      .fromTo(
+      .to(
         laptop.position,
-        { x: 0.65, y: -0.36, z: 0.2 },
-        { x: 0, y: -1.14, z: 1.0, ease: 'none', immediateRender: false },
+        { x: 1.0, y: -1.14, z: 1.45, ease: 'none', immediateRender: false },
         0
       )
-      .fromTo(
+      .to(
         laptop.rotation,
-        { x: 0.28, y: -0.42, z: 0.08 },
-        { x: 0, y: 0, z: 0, ease: 'none', immediateRender: false },
+        { x: 0.20, y: -0.32, z: 0.04, ease: 'none', immediateRender: false },
         0
       )
-      .fromTo(
+      .to(
         laptop.scale,
-        { x: 0.72, y: 0.72, z: 0.72 },
-        { x: 0.94, y: 0.94, z: 0.94, ease: 'none', immediateRender: false },
+        { x: 0.88, y: 0.88, z: 0.88, ease: 'none', immediateRender: false },
         0
       );
 
@@ -262,7 +280,7 @@ export function useLaptopScroll(
       skillsTL.fromTo(
         lid.rotation,
         { x: -0.32 },
-        { x: 0, ease: 'none', immediateRender: false },
+        { x: -0.25, ease: 'none', immediateRender: false },
         0
       );
     }
@@ -276,74 +294,70 @@ export function useLaptopScroll(
       anticipatePin: 1,
     });
 
-    // 5. Skills -> Projects: Pin and Horizontal Scroll
-    const projectCards = gsap.utils.toArray<HTMLElement>('.project-slide');
+    // 5. Skills -> Projects Entrance: Smoothly glide laptop from Right to Left Docked position (Centered in left 50%)
+    const projectsEnterTL = gsap.timeline({
+      scrollTrigger: {
+        trigger: '#projects',
+        start: 'top bottom',
+        end: 'top top',
+        scrub: true,
+      },
+    });
 
-    if (projectCards.length > 0) {
-      const horizontalContainer = document.getElementById('projects-pin-container');
+    projectsEnterTL
+      .to(
+        laptop.position,
+        { x: -0.88, y: -1.0, z: 1.52, ease: 'none', immediateRender: false },
+        0
+      )
+      .to(
+        laptop.rotation,
+        { x: 0.16, y: 0.28, z: -0.02, ease: 'none', immediateRender: false },
+        0
+      )
+      .to(
+        laptop.scale,
+        { x: 0.86, y: 0.86, z: 0.86, ease: 'none', immediateRender: false },
+        0
+      );
 
-      if (horizontalContainer) {
-        const horizontalTL = gsap.timeline({
-          scrollTrigger: {
-            trigger: '#projects-pin-container',
-            pin: true,
-            start: 'top top',
-            end: () => `+=${projectCards.length * 550}`,
-            scrub: true,
-            anticipatePin: 1,
-            invalidateOnRefresh: true,
-            onEnter: () => setActiveSection('projects'),
-            onLeaveBack: () => setActiveSection('skills'),
-            onUpdate: (self) => {
-              const currentIdx = Math.min(
-                Math.floor(self.progress * projectCards.length),
-                projectCards.length - 1
-              );
-              setActiveProject(currentIdx);
-            },
-          },
-        });
-
-        // Dock laptop smoothly to the left side
-        horizontalTL
-          .to(
-            laptop.position,
-            { x: -2.3, y: -0.1, z: 0.75, ease: 'none' },
-            0
-          )
-          .to(
-            laptop.rotation,
-            { x: 0.15, y: 0.38, z: 0, ease: 'none' },
-            0
-          )
-          .to(
-            laptop.scale,
-            { x: 0.95, y: 0.95, z: 0.95, ease: 'none' },
-            0
-          );
-
-        if (lid) {
-          horizontalTL.to(lid.rotation, { x: -0.32, ease: 'none' }, 0);
-        }
-
-        // Slide project cards right-to-left
-        horizontalTL.to(
-          projectCards,
-          {
-            xPercent: -100 * (projectCards.length - 1),
-            ease: 'none',
-          },
-          0
-        );
-      }
+    if (lid) {
+      projectsEnterTL.fromTo(
+        lid.rotation,
+        { x: -0.25 },
+        { x: -0.25, ease: 'none', immediateRender: false },
+        0
+      );
     }
 
-    // 6. Projects -> Experience & Education
+    // Pinned Projects Section: Virtual scroll distance to smoothly cycle through projects in-place
+    const totalProjects = featuredProjects.length;
+    ScrollTrigger.create({
+      id: 'projects-pin',
+      trigger: '#projects-pin-container',
+      pin: true,
+      start: 'top top',
+      end: () => `+=${totalProjects * 1000}`,
+      scrub: true,
+      anticipatePin: 1,
+      invalidateOnRefresh: true,
+      onEnter: () => setActiveSection('projects'),
+      onLeaveBack: () => setActiveSection('skills'),
+      onUpdate: (self) => {
+        const currentIdx = Math.min(
+          Math.floor(self.progress * totalProjects),
+          totalProjects - 1
+        );
+        setActiveProject(currentIdx);
+      },
+    });
+
+    // 6. Projects -> Experience & Education (Glide laptop from Left to Right Docked position)
     const expTL = gsap.timeline({
       scrollTrigger: {
         trigger: '#experience',
         start: 'top bottom',
-        end: 'top 30%',
+        end: 'top 20%',
         scrub: true,
         onEnter: () => setActiveSection('experience'),
         onLeaveBack: () => setActiveSection('projects'),
@@ -351,10 +365,23 @@ export function useLaptopScroll(
     });
 
     expTL
-      .to(laptop.position, { x: -2.3, y: -4.5, z: -1.5, ease: 'none' }, 0)
-      .to(laptop.rotation, { x: 0.5, y: 0.2, z: 0, ease: 'none' }, 0);
+      .to(
+        laptop.position,
+        { x: 0.95, y: -0.15, z: 0.45, ease: 'none', immediateRender: false },
+        0
+      )
+      .to(
+        laptop.rotation,
+        { x: 0.18, y: -0.32, z: 0.04, ease: 'none', immediateRender: false },
+        0
+      )
+      .to(
+        laptop.scale,
+        { x: 0.82, y: 0.82, z: 0.82, ease: 'none', immediateRender: false },
+        0
+      );
 
-    // 7. Experience -> Contact
+    // 7. Experience -> Contact & Certifications (Laptop stays active and docked)
     const contactTrigger = ScrollTrigger.create({
       trigger: '#contact',
       start: 'top 70%',
